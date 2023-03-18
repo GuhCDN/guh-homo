@@ -1,2 +1,93 @@
-<iframe src="https://bonzi.lol" height="1920" width="1080">
-<iframe src="https://discord.com/app" height="1920" width="1080">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>wave</title>
+  <style type="text/css" media="screen">
+	  html, body{
+	  	overflow: hidden;
+	  }
+    #loader{
+      position: absolute;
+      height: 15px;
+      background-image: url(https://win7simu.visnalize.com/img/start-button-classic.ec7b0b9f.webp)
+      top: calc(50% + 100px);
+      left: 1%;
+      right: 1%;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    #canvas{
+      margin: auto;
+      position: absolute;
+      height: 230px;
+      width: 230px;
+      top: calc(50% - 150px);
+      left: 1%;
+      right: 1%;
+    }
+    #boot {
+      background-color: #000;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: auto;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+<div id="boot">
+  <canvas id="canvas" width="230" height="230"></canvas>
+  <div id="loader"></div>
+</div>
+
+<script>
+var
+   img = new Image()
+  ,cnv = document.getElementById('canvas')
+  ,ctx = cnv.getContext('2d')
+  ,fx = [
+    {value: 0, amp: 10, inc: 0.01, offset: 0},
+    {value: 0, amp: 10, inc: 0, offset: 0}
+  ]
+;
+img.onload = go;
+img.src = "https://win7simu.visnalize.com/img/start-button-classic.ec7b0b9f.webp"
+  function siny(posx,posy){
+  var oldvalue = [], i, j, l = fx.length, w = img.width, prov = 0;
+  for (j = 0; j < l; j++) oldvalue[j] = fx[j].value;
+  for (i = 0; i < w; i++){
+    prov = 0;
+    for (j = 0; j < l; j++) prov += Math.sin(fx[j].value) * fx[j].amp;
+    ctx.translate(i+posx, prov+posy);
+    ctx.drawImage(img, i, 0, 1, img.height, 0, 0, 1, img.height);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    for (j = 0; j < l; j++) fx[j].value += fx[j].inc;
+  }
+  for (j = 0; j < l; j++) fx[j].value = oldvalue[j] + fx[j].offset;
+}
+function go(){
+  if (fx[1].inc< 1){
+    fx[1].inc = fx[1].inc + 0.001;
+  }
+  if (fx[0].amp < 10) {
+    fx[0].amp = fx[0].amp + 0.1;
+    fx[1].amp = fx[1].amp + 0.1;
+  };
+  if (fx[0].offset > -0.05) {
+    fx[0].offset = fx[0].offset - 0.01;
+    fx[1].offset = fx[1].offset + 0.01;
+  };
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, cnv.width, cnv.height);
+  siny(0,20);
+  requestAnimationFrame(go);
+}
+</script>
+</body>
+</html>
